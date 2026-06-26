@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 func main() {  
-	// Use backtick ` for comfortable multiline strings in Go
+	// Use backtick `  for comfortable multiline strings in Go
 	hacked := `
 [31m
  ██╗  ██╗ █████╗  ██████╗██╗  ██╗███████╗██████╗ 
