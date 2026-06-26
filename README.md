@@ -52,7 +52,7 @@ Copy the ngrok HTTPS URL (e.g. `https://abc123.ngrok.io`).
 Create a new branch containing the malicious code:
 
 ```bash
-git checkout -b test-pending
+git checkout -b test-pending master
 ```
 
 Edit `workflow.sh` to steal the secret:
